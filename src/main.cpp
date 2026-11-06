@@ -33,75 +33,25 @@
  */
 #include <Arduino.h>
 
-// ---------------------------------------------------------------------------
-// Global variables
-// Declared OUTSIDE any function, so setup(), loop() and any other
-// function can use them. Their values are kept between loop() runs.
-// ---------------------------------------------------------------------------
+#define sensLuz A0
+#define ledPin 13
 
-// The pin our LED is connected to. "const" means it can never change.
-const int ledPin = 13;
+int valorSensLuz = 0;
+int asEscuras = 200;
 
-// An "int" stores a whole number (no decimals), e.g. -3, 0, 500.
-// Here it holds how long the LED stays on/off, in milliseconds.
-int blinkDelay = 500;
-
-// A "bool" (boolean) stores only two values: true or false.
-// It remembers whether the LED should be on (true) or off (false).
-// We start with the LED off.
-bool ledIsOn = false;
-
-// ---------------------------------------------------------------------------
-// A dummy function
-// Functions let us give a name to a block of code and reuse it.
-//   void          -> this function does not return any value
-//   sayHello      -> the function's name
-//   ()            -> it takes no inputs (parameters)
-// It isn't needed for blinking - it's here to show how functions work.
-// ---------------------------------------------------------------------------
-void sayHello()
-{
-  Serial.println("Hello from sayHello()!");
-}
-
-// ---------------------------------------------------------------------------
-// setup(): runs once at the start
-// ---------------------------------------------------------------------------
-void setup()
-{
-  // Tell the board that ledPin is an OUTPUT (we send voltage out of it).
-  pinMode(ledPin, OUTPUT);
-
-  // Start serial communication at 9600 baud so we can print messages.
-  // Open the PlatformIO Serial Monitor to read them (speed must match:
-  // see monitor_speed in platformio.ini).
+void setup() {
   Serial.begin(9600);
-
-  // Call (use) our dummy function.
-  sayHello();
+  pinMode(ledPin, OUTPUT);
+  digitalWrite(ledPin, LOW);
 }
 
-// ---------------------------------------------------------------------------
-// loop(): runs forever
-// ---------------------------------------------------------------------------
-void loop()
-{
-  // Flip the boolean: "!" means NOT, so true becomes false and
-  // false becomes true. Each time loop() runs, the state swaps.
-  ledIsOn = !ledIsOn;
-
-  // Use the boolean to decide what to do.
-  if (ledIsOn)
-  {
-    digitalWrite(ledPin, HIGH); // HIGH = 5V on the pin -> LED on
-    Serial.println("LED is ON");
+void loop() {
+  valorSensLuz = analogRead(sensLuz);
+  Serial.println(valorSensLuz);
+  if (valorSensLuz < asEscuras) {
+    digitalWrite(ledPin, HIGH);
+  } else {
+    digitalWrite(ledPin, LOW);
   }
-  else
-  {
-    digitalWrite(ledPin, LOW); // LOW = 0V on the pin -> LED off
-    Serial.println("LED is OFF");
-  }
-
-  // Wait blinkDelay milliseconds before loop() runs again.
-  delay(blinkDelay);
+  delay(1);
 }
